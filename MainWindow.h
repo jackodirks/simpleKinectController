@@ -14,9 +14,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void displayError(QString error);
     
 private:
     Ui::MainWindow *ui;
+private slots:
+    void setNewValue(int val);
 };
 
 #endif // MAINWINDOW_H

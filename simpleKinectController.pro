@@ -10,11 +10,20 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = simpleKinectController
 TEMPLATE = app
-
+INCLUDEPATH += "C:/Program Files/Microsoft SDKs/Kinect/v1.7/inc"
+INCLUDEPATH += "C:/Program Files/Microsoft SDKs/Windows/v7.1/Include"
+LIBS += -L"C:/Program Files/Microsoft SDKs/Kinect/v1.7/lib/amd64/" -lKinect10
 
 SOURCES += main.cpp\
-        MainWindow.cpp
+        MainWindow.cpp \
+    Kinect.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    Kinect.h
 
 FORMS    += MainWindow.ui
+
+
+
+
+
