@@ -1,0 +1,3 @@
+This is an very simple GUI on which the user will be able to set the Kinect height and look through its camera.
+
+Created with Qt 5.0.1 and Microsoft Kinect SDK
