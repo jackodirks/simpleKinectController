@@ -10,11 +10,13 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     KinectManager manager;
-    QObject::connect(&manager,SIGNAL( mapChanged(QMap<int,QString>)),&w,SLOT(setDropDownList(QMap<int,QString>)));
+    typedef QMap<int,QString> KinectStringMap;
+    qRegisterMetaType<KinectStringMap>("KinectStringMap");
+    QObject::connect(&manager,SIGNAL( mapChanged(KinectStringMap)),&w,SLOT(setDropDownList(KinectStringMap)));
     QObject::connect(&manager,SIGNAL(changeSelection(int)),&w,SLOT(setComboBox(int)));
+    QObject::connect(&manager,SIGNAL(error(QString)),&w,SLOT(displayError(QString)));
     HRESULT hr = manager.initialize();
-    if (hr == E_NOT_SET)  w.displayError("No usable Kinect found");
-    else if (FAILED(hr)) w.displayError("Someting went wrong while making the list of kinects: " + QString::number(hr));
+    if (FAILED(hr)) w.displayError("Something big happend: " + QString::number(hr));
     //if (kinectList.size() == 0) w.displayError("No Kinects to be found.");
 
     return a.exec();

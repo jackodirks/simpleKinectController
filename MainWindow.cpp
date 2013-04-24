@@ -23,6 +23,7 @@ void MainWindow::setDropDownList(QMap<int, QString> map){
     QMapIterator<int,QString>i(map);
     while(i.hasNext()){
         i.next();
+        ui->comboBoxKinect->clear();
         ui->comboBoxKinect->insertItem(i.key(),i.value());
     }
 }

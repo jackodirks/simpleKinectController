@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void displayError(QString error);
+
     
 private:
     Ui::MainWindow *ui;
@@ -24,6 +24,7 @@ private slots:
 public slots:
     void setDropDownList(QMap<int,QString> map);
     void setComboBox(int i);
+    void displayError(QString error);
 };
 
 #endif // MAINWINDOW_H

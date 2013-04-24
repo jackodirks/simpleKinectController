@@ -12,11 +12,15 @@ KinectManager::~KinectManager(){
 }
 
 HRESULT KinectManager::initialize(){
+    HRESULT hr = fillMaps();
+    if (FAILED(hr)) return hr;
     NuiSetDeviceStatusCallback(OnSensorStatusChanged, this);
-    return fillMaps();
+    return S_OK;
 }
 
 HRESULT KinectManager::fillMaps(){
+    kinectMap.clear();
+    nameMap.clear();
     HRESULT hr;
     int kinectCount;
     INuiSensor * nui;
@@ -73,12 +77,13 @@ HRESULT KinectManager::fillMaps(){
     }
     emit mapChanged(nameMap);
     if (kinectMap.isEmpty()){
-        return E_NOT_SET;
+        emit error("No usable Kinects found");
     }
-    if (kinect == NULL){
+    else if (kinect == NULL){
         kinect = new Kinect(kinectMap.begin().value());
         kinect->initialize();
         emit changeSelection(kinectMap.begin().key());
+        emit error("");
     }
     return S_OK;
 }

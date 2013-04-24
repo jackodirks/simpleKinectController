@@ -20,5 +20,6 @@ private:
 signals:
     void mapChanged(QMap<int,QString> kinectMap);
     void changeSelection(int i);
+    void error (QString error);
 };
 #endif // KINECTMANAGER_H
