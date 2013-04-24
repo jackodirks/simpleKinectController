@@ -3,19 +3,23 @@
 
 #include <Windows.h>
 #include <NuiApi.h>
-#include <QList>
+#include <QMap>
+#include <QObject>
 
-class Kinect
+class Kinect : public QObject
 {
+    Q_OBJECT
 public:
-    Kinect();
+    Kinect(INuiSensor* nui);
     ~Kinect();
-    static HRESULT getSensors (QList<INuiSensor *> &sensorList);
+
+    INuiSensor* getSensor(){return nui;}
+    HRESULT initialize();
+    HRESULT uninitialize();
+private:
+    INuiSensor* nui;
 };
 
-class KinectManager
-{
 
-};
 
 #endif // KINECT_H

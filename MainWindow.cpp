@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->kinectHeightSlider,SIGNAL(valueChanged(int)),this,SLOT(setNewValue(int)));
+    ui->comboBoxKinect->setCurrentIndex(-1);
 }
 
 MainWindow::~MainWindow()
@@ -16,6 +17,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::setNewValue(int val){
     this->ui->labelNewHeight->setText(QString::number(val));
+}
+
+void MainWindow::setDropDownList(QMap<int, QString> map){
+    QMapIterator<int,QString>i(map);
+    while(i.hasNext()){
+        i.next();
+        ui->comboBoxKinect->insertItem(i.key(),i.value());
+    }
+}
+
+void MainWindow::setComboBox(int i){
+    ui->comboBoxKinect->setCurrentIndex(i);
 }
 
 void MainWindow::displayError(QString error){

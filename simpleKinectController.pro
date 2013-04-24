@@ -16,10 +16,12 @@ LIBS += -L"C:/Program Files/Microsoft SDKs/Kinect/v1.7/lib/amd64/" -lKinect10
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    Kinect.cpp
+    Kinect.cpp \
+    KinectManager.cpp
 
 HEADERS  += MainWindow.h \
-    Kinect.h
+    Kinect.h \
+    KinectManager.h
 
 FORMS    += MainWindow.ui
 
