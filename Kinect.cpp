@@ -1,8 +1,8 @@
 #include "Kinect.h"
 
-Kinect::Kinect(INuiSensor *nui)
+Kinect::Kinect(INuiSensor *nui, QObject* parent) : QObject(parent)
 {
-    this->nui = nui;
+    this->nui.reset(nui);
 }
 
 Kinect::~Kinect(){

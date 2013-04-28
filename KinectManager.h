@@ -11,11 +11,13 @@ public:
     HRESULT initialize();
 
 private:
-    HRESULT fillMaps();
-    QMap<int,QString> nameMap;
-    QMap<int, INuiSensor*> kinectMap;
-    Kinect* kinect;
+    QString hresultToQstring(HRESULT hr);
+
     static void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* instanceName, const OLECHAR* uniqueDeviceName, void* userData);
+
+    QMap<int,QString> nameMap;
+    QMap<int, Kinect> kinectMap;
+    int selectedKinect;
 
 signals:
     void mapChanged(QMap<int,QString> kinectMap);

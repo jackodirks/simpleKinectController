@@ -5,19 +5,23 @@
 #include <NuiApi.h>
 #include <QMap>
 #include <QObject>
+#include <memory>
 
 class Kinect : public QObject
 {
     Q_OBJECT
 public:
-    Kinect(INuiSensor* nui);
+    Kinect(INuiSensor* nui, QObject *parent = 0);
     ~Kinect();
 
-    INuiSensor* getSensor(){return nui;}
     HRESULT initialize();
     HRESULT uninitialize();
+
+    BSTR getDeviceConnectionId(){nui->NuiDeviceConnectionId();}
+    HRESULT getStatus(){nui->NuiStatus();}
+
 private:
-    INuiSensor* nui;
+    std::unique_ptr<INuiSensor> nui;
 };
 
 
