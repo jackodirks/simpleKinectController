@@ -2,11 +2,11 @@
 
 Kinect::Kinect(INuiSensor *nui, QObject* parent) : QObject(parent)
 {
-    this->nui.reset(nui);
+   this->nui = nui;
 }
 
 Kinect::~Kinect(){
-
+    uninitialize();
 }
 
 HRESULT Kinect::initialize(){
@@ -16,3 +16,5 @@ HRESULT Kinect::initialize(){
 HRESULT Kinect::uninitialize(){
     return S_OK;
 }
+
+

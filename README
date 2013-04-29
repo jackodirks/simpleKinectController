@@ -11,3 +11,18 @@ Also: all comminucation will go trough this manager. The main will connect the s
 if one is chosen. The Window will get only the first map, so the window does not even know what a Kinect is. Because of the keys the manager knows what Kinect the GUI is talking about and if possible it will activate this Kinect.
 
 On the initialization of the KinectManager it will make a map of KinectObjects, each of them hold their own INuiSensor*. After that all changes are event driven. The callback function will update the int,Kinect map or the int,QString map, based on what changed.
+
+Some of the output of the callback function:
+When unplugging the power cable (cripling the Kinect, but not disconnect it)
+	Locals		
+		hr	2197881471	HRESULT
+		instanceName	@0x296fd8 "USB\VID_0409&PID_005A\5&11976120&0&2"	wchar_t *
+			*instanceName	85	wchar_t
+		pThis	@0x13f081622	KinectManager *
+		uniqueDeviceName	0x0	wchar_t *
+		userData	@0x1cfbc0	void *
+	Inspector		
+	Expressions		
+	Return Value		
+	Tooltip		
+When unplugging the USB cable:

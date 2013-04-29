@@ -1,6 +1,7 @@
 #ifndef KINECTMANAGER_H
 #define KINECTMANAGER_H
 #include "Kinect.h"
+#include <QSharedPointer>
 
 class KinectManager : public QObject
 {
@@ -16,7 +17,7 @@ private:
     static void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* instanceName, const OLECHAR* uniqueDeviceName, void* userData);
 
     QMap<int,QString> nameMap;
-    QMap<int, Kinect> kinectMap;
+    QMap<int, QSharedPointer<Kinect>> kinectMap;
     int selectedKinect;
 
 signals:

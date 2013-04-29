@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
     QObject::connect(&manager,SIGNAL(error(QString)),&w,SLOT(displayError(QString)));
     HRESULT hr = manager.initialize();
     if (FAILED(hr)) w.displayError("Something big happend: " + QString::number(hr));
-    //if (kinectList.size() == 0) w.displayError("No Kinects to be found.");
 
     return a.exec();
 }

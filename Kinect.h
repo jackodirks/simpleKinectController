@@ -5,7 +5,7 @@
 #include <NuiApi.h>
 #include <QMap>
 #include <QObject>
-#include <memory>
+#include <atlbase.h>
 
 class Kinect : public QObject
 {
@@ -17,12 +17,17 @@ public:
     HRESULT initialize();
     HRESULT uninitialize();
 
-    BSTR getDeviceConnectionId(){nui->NuiDeviceConnectionId();}
-    HRESULT getStatus(){nui->NuiStatus();}
+    BSTR getDeviceConnectionId(){return nui->NuiDeviceConnectionId();}
+    HRESULT getStatus(){return nui->NuiStatus();}
 
 private:
-    std::unique_ptr<INuiSensor> nui;
+    CComPtr<INuiSensor> nui;
+    static void releaseINuiSensor(INuiSensor* sensor){
+        sensor->Release();
+    }
 };
+
+
 
 
 
