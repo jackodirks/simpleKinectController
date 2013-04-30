@@ -26,3 +26,13 @@ When unplugging the power cable (cripling the Kinect, but not disconnect it)
 	Return Value		
 	Tooltip		
 When unplugging the USB cable:
+	Locals		
+		hr	2197880852	HRESULT
+		instanceName	@0x5066a8 "USB\VID_0409&PID_005A\5&11976120&0&1"	wchar_t *
+		pThis	@0x13f7a1622	KinectManager *
+		<unnamed 1>	0x0	wchar_t *
+		userData	@0x2efd50	void *
+	Inspector		
+	Expressions		
+	Return Value		
+	Tooltip		

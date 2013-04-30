@@ -32,17 +32,10 @@ HRESULT KinectManager::initialize(){
         hr = kinect->getStatus();
         nameMap.insert(i,"Kinect"+QString::number(i)+ (hresultToQstring(hr) == "" ? "" : "<" +hresultToQstring(hr) + ">"));
     }
+    changeSelected();
     emit mapChanged(nameMap);
-    QMapIterator<int, QSharedPointer<Kinect>> it (kinectMap);
-    while (it.hasNext()){
-        it.next();
-        if ((FAILED (it.value()->getStatus()))) continue;
-        selectedKinect = it.key();
-        it.value()->initialize();
-        break;
-    }
-    emit changeSelection(selectedKinect);
-    if (selectedKinect == -1) emit error("No usable Kinect found");
+
+
     NuiSetDeviceStatusCallback(OnSensorStatusChanged, this);
     return S_OK;
 }
@@ -74,6 +67,54 @@ QString KinectManager::hresultToQstring(HRESULT hr){
     }
 }
 
+void KinectManager::changeSelected(int i){
+    if (i == -1){ //"default": check if there is a Kinect currently active and if not do nothing
+        if (selectedKinect != -1) return; //If there is no Kinect chosen pick the default one (first one in the map)
+        else{
+            QMapIterator<int, QSharedPointer<Kinect>> it (kinectMap);
+            while (it.hasNext()){
+                it.next();
+                if ((FAILED (it.value()->getStatus()))) continue;
+                selectedKinect = it.key();
+                initKinect(it.value());
+                break;
+            }
+            emit selectionChanged(selectedKinect);
+            if (selectedKinect == -1) emit error("No usable Kinect found.");
+        }
+    }
+    if (kinectMap.value(i) == nullptr || FAILED(kinectMap.value(i)->getStatus())){ //unusable kinect (or non-existing one)
+        emit selectionChanged(selectedKinect);
+    }
+    else {
+        HRESULT hr = uninitKinect(kinectMap.value(selectedKinect));
+        if (FAILED(hr)){
+            emit error("Failed to select Kinect:" + hresultToQstring(hr));
+            selectedKinect = -1;
+            emit selectionChanged(selectedKinect);
+            return;
+        }
+        hr = initKinect(kinectMap.value(i));
+        if (FAILED(hr)){
+            emit error("Failed to select Kinect:" + hresultToQstring(hr));
+            selectedKinect = -1;
+            emit selectionChanged(selectedKinect);
+            return;
+        }
+        //Should probably do some signal binding here
+        selectedKinect = 1;
+        emit selectionChanged(selectedKinect);
+    }
+}
+
+HRESULT KinectManager::initKinect(QSharedPointer<Kinect> kinect){
+    return kinect->initialize();
+}
+
+HRESULT KinectManager::uninitKinect(QSharedPointer<Kinect> kinect){
+    return kinect ->uninitialize();
+}
+
 void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* instanceName, const OLECHAR*, void* userData)
 {
     KinectManager* pThis = (KinectManager*)userData;
@@ -81,7 +122,8 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
     int index = -1;
     QMapIterator<int, QSharedPointer<Kinect>> it (pThis->kinectMap);
     while (it.hasNext()){
-        if (it.value()->getDeviceConnectionId() == instanceName){
+        it.next();
+        if (wcscmp(it.value()->getDeviceConnectionId(),instanceName) == 0){
             index = it.key();
             break;
         }

@@ -22,9 +22,6 @@ public:
 
 private:
     CComPtr<INuiSensor> nui;
-    static void releaseINuiSensor(INuiSensor* sensor){
-        sensor->Release();
-    }
 };
 
 
