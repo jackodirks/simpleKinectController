@@ -34,8 +34,6 @@ HRESULT KinectManager::initialize(){
     }
     changeSelected();
     emit mapChanged(nameMap);
-
-
     NuiSetDeviceStatusCallback(OnSensorStatusChanged, this);
     return S_OK;
 }
@@ -67,9 +65,13 @@ QString KinectManager::hresultToQstring(HRESULT hr){
     }
 }
 
+void KinectManager::changeSelected(QString str){
+    changeSelected(nameMap.key(str));
+}
+
 void KinectManager::changeSelected(int i){
-    if (i == -1){ //"default": check if there is a Kinect currently active and if not do nothing
-        if (selectedKinect != -1) return; //If there is no Kinect chosen pick the default one (first one in the map)
+    if (i == -1){ //"default": check if there is a Kinect currently active and if yes do nothing
+        if (selectedKinect != -1) return; //If there is no Kinect chosen pick the default one (first usable one in the map)
         else{
             QMapIterator<int, QSharedPointer<Kinect>> it (kinectMap);
             while (it.hasNext()){
@@ -83,8 +85,9 @@ void KinectManager::changeSelected(int i){
             if (selectedKinect == -1) emit error("No usable Kinect found.");
         }
     }
-    if (kinectMap.value(i) == nullptr || FAILED(kinectMap.value(i)->getStatus())){ //unusable kinect (or non-existing one)
+    else if (kinectMap.value(i) == nullptr || FAILED(kinectMap.value(i)->getStatus())){ //unusable kinect (or non-existing one)
         emit selectionChanged(selectedKinect);
+        emit error("This Kinect is not usable");
     }
     else {
         HRESULT hr = uninitKinect(kinectMap.value(selectedKinect));
@@ -101,8 +104,7 @@ void KinectManager::changeSelected(int i){
             emit selectionChanged(selectedKinect);
             return;
         }
-        //Should probably do some signal binding here
-        selectedKinect = 1;
+        selectedKinect = i;
         emit selectionChanged(selectedKinect);
     }
 }
@@ -141,7 +143,21 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
         QSharedPointer<Kinect> kinect(new Kinect(nui));
         pThis->kinectMap.insert(index,kinect);
         pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
-        emit pThis->mapChanged(pThis->nameMap);
+    } else {
+        if (hr == E_NUI_NOTCONNECTED){  //The Kinect has been disconnected
+            pThis->uninitKinect(pThis->kinectMap.value(index));
+            pThis->kinectMap.remove(index);
+            pThis->nameMap.remove(index);
+            pThis->selectedKinect = -1;
+            pThis->changeSelected();
+        } else {    //The status of the kinect has changed and it needs to be updated
+            pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
+            if (FAILED(hr) && pThis->selectedKinect == index){
+                pThis->uninitKinect(pThis->kinectMap.value(index));
+                pThis->selectedKinect = -1;
+                pThis->changeSelected();
+            }
+        }
     }
-
+    emit pThis->mapChanged(pThis->nameMap);
 }

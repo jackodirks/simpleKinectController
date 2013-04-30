@@ -25,6 +25,8 @@ public slots:
     void setDropDownList(QMap<int,QString> map);
     void setComboBox(int i);
     void displayError(QString error);
+signals:
+    void dropDownBoxUpdated(QString str);
 };
 
 #endif // MAINWINDOW_H

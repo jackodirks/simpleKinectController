@@ -16,6 +16,7 @@ private:
     static void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* instanceName, const OLECHAR* uniqueDeviceName, void* userData);
     HRESULT initKinect(QSharedPointer<Kinect> kinect);
     HRESULT uninitKinect(QSharedPointer<Kinect> kinect);
+    void changeSelected(int index = -1);
 
     QMap<int,QString> nameMap;
     QMap<int, QSharedPointer<Kinect>> kinectMap;
@@ -26,6 +27,6 @@ signals:
     void selectionChanged(int i);
     void error (QString error);
 public slots:
-    void changeSelected(int index = -1);
+    void changeSelected(QString str);
 };
 #endif // KINECTMANAGER_H
