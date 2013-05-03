@@ -6,6 +6,11 @@
 #include <QMap>
 #include <QObject>
 #include <atlbase.h>
+#include <QByteArray>
+
+#ifdef QT_DEBUG
+#include <QDebug>
+#endif // QT_DEBUG
 
 class Kinect : public QObject
 {
@@ -19,9 +24,20 @@ public:
 
     BSTR getDeviceConnectionId(){return nui->NuiDeviceConnectionId();}
     HRESULT getStatus(){return nui->NuiStatus();}
+    void fireKinectAngle();
 
 private:
     CComPtr<INuiSensor> nui;
+    HANDLE nextColorFrameEvent;
+    HANDLE videoStreamHandle;
+    void kinectProcessThread();
+
+public slots:
+    void setKinectAngle(long angle);
+signals:
+    void kinectAngleChanged(long angle);
+    void error(QString error);
+    void videoFrame(QByteArray pBits, int width, int height);
 };
 
 

@@ -14,9 +14,12 @@ int main(int argc, char *argv[])
     qRegisterMetaType<KinectStringMap>("KinectStringMap");
 
     QObject::connect(&manager,SIGNAL( mapChanged(KinectStringMap)),&w,SLOT(setDropDownList(KinectStringMap)));
-    QObject::connect(&manager,SIGNAL(selectionChanged(int)),&w,SLOT(setComboBox(int)));
+    QObject::connect(&manager,SIGNAL(selectionChanged(QString)),&w,SLOT(setComboBox(QString)));
     QObject::connect(&manager,SIGNAL(error(QString)),&w,SLOT(displayError(QString)));
+    QObject::connect(&manager,SIGNAL(kinectAngleChanged(long)),&w,SLOT(kinectAngle(long)));
+
     QObject::connect(&w,SIGNAL(dropDownBoxUpdated(QString)),&manager,SLOT(changeSelected(QString)));
+    QObject::connect(&w,SIGNAL(updateKinectAngle(long)),&manager,SIGNAL(changeKinectAngle(long)));
 
     HRESULT hr = manager.initialize();
     if (FAILED(hr)) w.displayError("Something big happend: " + QString::number(hr));

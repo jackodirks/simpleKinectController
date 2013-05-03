@@ -24,8 +24,10 @@ private:
 
 signals:
     void mapChanged(QMap<int,QString> kinectMap);
-    void selectionChanged(int i);
+    void selectionChanged(QString str);
     void error (QString error);
+    void kinectAngleChanged(long height); //outgoing signal
+    void changeKinectAngle(long angle); //incoming signal
 public slots:
     void changeSelected(QString str);
 };

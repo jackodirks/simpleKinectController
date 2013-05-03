@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QMap>
+#include <QTimer>
+#include <memory>
 
 namespace Ui {
 class MainWindow;
@@ -19,14 +21,20 @@ public:
     
 private:
     Ui::MainWindow *ui;
+    std::unique_ptr<QTimer> timer;
 private slots:
     void setNewValue(int val);
 public slots:
     void setDropDownList(QMap<int,QString> map);
-    void setComboBox(int i);
+    void setComboBox(QString str);
     void displayError(QString error);
+    void kinectAngle(long angle);
+private slots:
+    void emptyErrorLabel();
+    void buttonPressToUpdateKinectAngle();
 signals:
     void dropDownBoxUpdated(QString str);
+    void updateKinectAngle(long angle);
 };
 
 #endif // MAINWINDOW_H
