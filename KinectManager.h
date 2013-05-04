@@ -28,6 +28,7 @@ signals:
     void error (QString error);
     void kinectAngleChanged(long height); //outgoing signal
     void changeKinectAngle(long angle); //incoming signal
+    void stopThread();
 public slots:
     void changeSelected(QString str);
 };

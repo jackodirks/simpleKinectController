@@ -7,12 +7,17 @@
 #include <QObject>
 #include <atlbase.h>
 #include <QByteArray>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QtConcurrent/QtConcurrentRun>
+#include <QThread>
+#include <QMutex>
 
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif // QT_DEBUG
 
-class Kinect : public QObject
+class Kinect : public QThread
 {
     Q_OBJECT
 public:
@@ -22,18 +27,26 @@ public:
     HRESULT initialize();
     HRESULT uninitialize();
 
+    void run();
+
     BSTR getDeviceConnectionId(){return nui->NuiDeviceConnectionId();}
     HRESULT getStatus(){return nui->NuiStatus();}
-    void fireKinectAngle();
+
 
 private:
     CComPtr<INuiSensor> nui;
     HANDLE nextColorFrameEvent;
     HANDLE videoStreamHandle;
-    void kinectProcessThread();
+    QFutureWatcher<void> watcher;
+    static void handleKinectHeight(long angle, Kinect* pThis);
+
+    bool threadStop;
+    QMutex mutex;
 
 public slots:
     void setKinectAngle(long angle);
+    void fireKinectAngle();
+    void stopThread();
 signals:
     void kinectAngleChanged(long angle);
     void error(QString error);

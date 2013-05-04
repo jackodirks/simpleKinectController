@@ -1,13 +1,15 @@
 #include "Kinect.h"
-
-Kinect::Kinect(INuiSensor *nui, QObject* parent) : QObject(parent)
+Kinect::Kinect(INuiSensor *nui, QObject* parent) :QThread(parent)
 {
     nextColorFrameEvent= INVALID_HANDLE_VALUE;
     videoStreamHandle= INVALID_HANDLE_VALUE;
     this->nui = nui;
+    connect(&watcher,SIGNAL(finished()),this,SLOT(fireKinectAngle()));
+    threadStop = false;
 }
 
 Kinect::~Kinect(){
+    stopThread();
     uninitialize();
 }
 
@@ -30,18 +32,8 @@ HRESULT Kinect::initialize(){
 
 HRESULT Kinect::uninitialize(){
     if (nextColorFrameEvent && nextColorFrameEvent != INVALID_HANDLE_VALUE)CloseHandle(nextColorFrameEvent);
-#ifdef QT_DEBUG
-    DWORD error = GetLastError();
-    qDebug()<< error;
-#endif
     nui->NuiShutdown();
     return S_OK;
-}
-
-void Kinect::setKinectAngle(long angle){
-    HRESULT hr = nui->NuiCameraElevationSetAngle(angle);
-    if (FAILED(hr)) emit error("Something went wrong while changing the Kinect Height: " + QString::number(hr));
-    else fireKinectAngle();
 }
 
 void Kinect::fireKinectAngle(){
@@ -51,8 +43,27 @@ void Kinect::fireKinectAngle(){
     else emit kinectAngleChanged(kinectAngle);
 }
 
-void Kinect::kinectProcessThread(){
-
+void Kinect::run(){
+    while(true){
+        msleep(30);
+        if (threadStop) return;
+    }
 }
 
+void Kinect::setKinectAngle(long angle){       
 
+    QFuture<void> future = QtConcurrent::run(Kinect::handleKinectHeight,angle,this);
+    watcher.setFuture(future);
+}
+
+void Kinect::handleKinectHeight(long angle, Kinect* pThis){
+    HRESULT hr = pThis->nui->NuiCameraElevationSetAngle(angle);
+    if (FAILED(hr)) emit pThis->error("Something went wrong while changing the Kinect Height: " + QString::number(hr));
+    return;
+}
+
+void Kinect::stopThread(){
+    mutex.lock();
+    threadStop = true;
+    mutex.unlock();
+}
