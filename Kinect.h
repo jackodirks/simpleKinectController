@@ -41,7 +41,6 @@ private:
     static void handleKinectHeight(long angle, Kinect* pThis);
 
     bool threadStop;
-    QMutex mutex;
 
 public slots:
     void setKinectAngle(long angle);

@@ -63,7 +63,5 @@ void Kinect::handleKinectHeight(long angle, Kinect* pThis){
 }
 
 void Kinect::stopThread(){
-    mutex.lock();
     threadStop = true;
-    mutex.unlock();
 }
