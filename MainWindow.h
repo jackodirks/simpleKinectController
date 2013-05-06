@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QTimer>
 #include <memory>
+#include "OpenGLWidget.h"
 
 namespace Ui {
 class MainWindow;
