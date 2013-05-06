@@ -1,11 +1,15 @@
 #include "Kinect.h"
+
+const int width = 640;
+const int height = 480;
+
 Kinect::Kinect(INuiSensor *nui, QObject* parent) :QThread(parent)
 {
     nextColorFrameEvent= INVALID_HANDLE_VALUE;
     videoStreamHandle= INVALID_HANDLE_VALUE;
     this->nui = nui;
     connect(&watcher,SIGNAL(finished()),this,SLOT(fireKinectAngle()));
-    threadStop = false;
+    continueThread = true;
 }
 
 Kinect::~Kinect(){
@@ -44,9 +48,17 @@ void Kinect::fireKinectAngle(){
 }
 
 void Kinect::run(){
-    while(true){
-        msleep(30);
-        if (threadStop) return;
+    while(continueThread){
+        if (WAIT_OBJECT_0 ==  WaitForSingleObject(nextColorFrameEvent,30) ){
+            NUI_IMAGE_FRAME imageFrame;
+            NUI_LOCKED_RECT LockedRect;
+            if(FAILED(nui->NuiImageStreamGetNextFrame(videoStreamHandle,0,&imageFrame)))continue;
+            INuiFrameTexture *texture = imageFrame.pFrameTexture;
+            texture->LockRect(0,&LockedRect,NULL,0);
+            BYTE* curr = LockedRect.pBits;
+            QByteArray byteArray = QByteArray::QByteArray((char*)curr,width*height*4);
+            emit videoFrame(byteArray);
+        }
     }
 }
 
@@ -63,5 +75,5 @@ void Kinect::handleKinectHeight(long angle, Kinect* pThis){
 }
 
 void Kinect::stopThread(){
-    threadStop = true;
+    continueThread = false;
 }

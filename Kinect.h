@@ -40,7 +40,7 @@ private:
     QFutureWatcher<void> watcher;
     static void handleKinectHeight(long angle, Kinect* pThis);
 
-    bool threadStop;
+    bool continueThread;
 
 public slots:
     void setKinectAngle(long angle);
@@ -49,7 +49,7 @@ public slots:
 signals:
     void kinectAngleChanged(long angle);
     void error(QString error);
-    void videoFrame(QByteArray pBits, int width, int height);
+    void videoFrame(QByteArray pBits);
 };
 
 
