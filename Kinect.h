@@ -9,7 +9,7 @@
 #include <QByteArray>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrentRun>
 #include <QThread>
 #include <QMutex>
 

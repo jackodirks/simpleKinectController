@@ -2,6 +2,7 @@
 #include <QApplication>
 #include "KinectManager.h"
 #include <QMap>
+#include <Qt>
 
 int main(int argc, char *argv[])
 {
@@ -10,10 +11,8 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
     KinectManager manager;
-    typedef QMap<int,QString> KinectStringMap;
-    qRegisterMetaType<KinectStringMap>("KinectStringMap");
-
-    QObject::connect(&manager,SIGNAL( mapChanged(KinectStringMap)),&w,SLOT(setDropDownList(KinectStringMap)));
+    qRegisterMetaType<QMap<int,QString>>("QMap<int,QString>");
+    QObject::connect(&manager,SIGNAL( mapChanged(QMap<int,QString>)),&w,SLOT(setDropDownList(QMap<int,QString>)));
     QObject::connect(&manager,SIGNAL(selectionChanged(QString)),&w,SLOT(setComboBox(QString)));
     QObject::connect(&manager,SIGNAL(error(QString)),&w,SLOT(displayError(QString)));
     QObject::connect(&manager,SIGNAL(kinectAngleChanged(long)),&w,SLOT(kinectAngle(long)));

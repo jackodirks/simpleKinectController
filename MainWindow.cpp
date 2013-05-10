@@ -26,10 +26,10 @@ void MainWindow::setNewValue(int val){
 void MainWindow::setDropDownList(QMap<int, QString> map){
     QMapIterator<int,QString>i(map);
     int currentSelection = ui->comboBoxKinect->findText(ui->comboBoxKinect->currentText());
+    ui->comboBoxKinect->clear();
     while(i.hasNext()){
-        i.next();
-        ui->comboBoxKinect->clear();
-        ui->comboBoxKinect->insertItem(i.key(),i.value());
+        i.next();        
+        ui->comboBoxKinect->addItem(i.value());
     }
     ui->comboBoxKinect->setCurrentIndex(currentSelection);
 }
