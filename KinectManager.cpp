@@ -120,7 +120,7 @@ HRESULT KinectManager::initKinect(QSharedPointer<Kinect> kinect){
     connect(this,SIGNAL(changeKinectAngle(long)),kinect.data(),SLOT(setKinectAngle(long)));
     connect(kinect.data(),SIGNAL(error(QString)),this,SIGNAL(error(QString)));
     connect(this,SIGNAL(stopThread()),kinect.data(),SLOT(stopThread()));
-
+    connect(kinect.data(),SIGNAL(videoFrame(QByteArray)),this,SIGNAL(sendKinectByteArray(QByteArray)));
     kinect->fireKinectAngle();
     kinect->start();
     return hr;
@@ -133,6 +133,7 @@ HRESULT KinectManager::uninitKinect(QSharedPointer<Kinect> kinect){
     disconnect(this,SIGNAL(changeKinectAngle(long)),kinect.data(),SLOT(setKinectAngle(long)));
     disconnect(kinect.data(),SIGNAL(error(QString)),this,SIGNAL(error(QString)));
     disconnect(this,SIGNAL(stopThread()),kinect.data(),SLOT(stopThread()));
+    disconnect(kinect.data(),SIGNAL(videoFrame(QByteArray)),this,SIGNAL(sendKinectByteArray(QByteArray)));
     return kinect ->uninitialize();
 }
 

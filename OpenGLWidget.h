@@ -2,12 +2,13 @@
 #define OPENGLWIDGET_H
 
 #include <windows.h>
-#include <gl\gl.h>
+#include <gl/GL.h>
+#include <gl/GLU.h>
+#include <QByteArray>
 #include <QGLWidget>
 #include <memory>
 
-#define imageWidth = 640;
-#define imageHeight = 480;
+
 
 class OpenGLWidget : public QGLWidget
 {
@@ -17,14 +18,16 @@ public:
     OpenGLWidget(QWidget *parent = 0);
 
 private:
-//    GLuint textureId;
-//    GLubyte data;
-//    int screen_width, screen_height;
+    GLuint textureId;
 
-//    void initializeGL();
-//    void resizeGL(int w, int h);
-//    void paintGL();
+    int screen_width, screen_height;
 
+    void initializeGL();
+    void resizeGL(int w, int h);
+    void paintGL();
+
+public slots:
+    void receiveByteArray(QByteArray array);
 
 };
 

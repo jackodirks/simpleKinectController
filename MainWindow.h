@@ -36,6 +36,7 @@ private slots:
 signals:
     void dropDownBoxUpdated(QString str);
     void updateKinectAngle(long angle);
+    void receiveVGAArray(QByteArray array);
 };
 
 #endif // MAINWINDOW_H

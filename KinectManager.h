@@ -29,6 +29,7 @@ signals:
     void kinectAngleChanged(long height); //outgoing signal
     void changeKinectAngle(long angle); //incoming signal
     void stopThread();
+    void sendKinectByteArray(QByteArray array);
 public slots:
     void changeSelected(QString str);
 };

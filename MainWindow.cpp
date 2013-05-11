@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->kinectHeightSlider,SIGNAL(valueChanged(int)),this,SLOT(setNewValue(int)));
     connect(ui->comboBoxKinect,SIGNAL(activated(QString)),this,SIGNAL(dropDownBoxUpdated(QString)));
     connect(ui->pushButtonApplyHeight,SIGNAL(clicked()),this,SLOT(buttonPressToUpdateKinectAngle()));
+    connect(this,SIGNAL(receiveVGAArray(QByteArray)),ui->imageDisplayGLWidget,SLOT(receiveByteArray(QByteArray)));
 }
 
 MainWindow::~MainWindow()

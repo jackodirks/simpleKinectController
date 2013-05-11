@@ -58,8 +58,11 @@ void Kinect::run(){
             BYTE* curr = LockedRect.pBits;
             QByteArray byteArray = QByteArray::QByteArray((char*)curr,width*height*4);
             emit videoFrame(byteArray);
+            texture->UnlockRect(0);
+            nui->NuiImageStreamReleaseFrame(videoStreamHandle,&imageFrame);
         }
     }
+    continueThread = true;
 }
 
 void Kinect::setKinectAngle(long angle){       
