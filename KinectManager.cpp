@@ -82,8 +82,7 @@ void KinectManager::changeSelected(int i){
                 it.next();
                 if ((FAILED (it.value()->getStatus()))) continue;
                 selectedKinect = it.key();
-                initKinect(it.value());
-                break;
+				if (SUCCEEDED(initKinect(it.value()))) break;
             }
             emit selectionChanged(nameMap.value(selectedKinect));
             if (selectedKinect == -1) emit error("No usable Kinect found.");
@@ -115,7 +114,10 @@ void KinectManager::changeSelected(int i){
 
 HRESULT KinectManager::initKinect(QSharedPointer<Kinect> kinect){
     HRESULT hr = kinect->initialize();
-
+	if (FAILED(hr)){
+		emit error("Error while initializing Kinect (HRESULT " + QString::number(hr) + ")";
+		return hr;
+	}
     connect(kinect.data(),SIGNAL( kinectAngleChanged(long)),this,SIGNAL(kinectAngleChanged(long)));
     connect(this,SIGNAL(changeKinectAngle(long)),kinect.data(),SLOT(setKinectAngle(long)));
     connect(kinect.data(),SIGNAL(error(QString)),this,SIGNAL(error(QString)));
