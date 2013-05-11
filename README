@@ -2,37 +2,6 @@ This is an very simple GUI on which the user will be able to set the Kinect heig
 Multi-Kinect will be supported
 OpenGL will be used to render the images.
 
-Created with Qt 5.0.1 and Microsoft Kinect SDK
+Created with Qt 4.8.4 and Microsoft Kinect SDK. Used compiler is the MSVC2012 x86_64 compiler (yes, I compiled my very own Qt 4.8.4 for this).
 
-Ideas(from the dev, to the dev): Make a KinectManager, which contains two maps. The first map conatins a key and a pointer to an INUISensor, the second map contains the same key and a QString. 
-The QString indicates possible errors, so the end-user can see them.
-
-Also: all comminucation will go trough this manager. The main will connect the signals and slots from the mainWindow to the s&s of the KinectManager, and the KinectManager will connect those signals and slots to the KinectObject
-if one is chosen. The Window will get only the first map, so the window does not even know what a Kinect is. Because of the keys the manager knows what Kinect the GUI is talking about and if possible it will activate this Kinect.
-
-On the initialization of the KinectManager it will make a map of KinectObjects, each of them hold their own INuiSensor*. After that all changes are event driven. The callback function will update the int,Kinect map or the int,QString map, based on what changed.
-
-Some of the output of the callback function:
-When unplugging the power cable (cripling the Kinect, but not disconnect it)
-	Locals		
-		hr	2197881471	HRESULT
-		instanceName	@0x296fd8 "USB\VID_0409&PID_005A\5&11976120&0&2"	wchar_t *
-			*instanceName	85	wchar_t
-		pThis	@0x13f081622	KinectManager *
-		uniqueDeviceName	0x0	wchar_t *
-		userData	@0x1cfbc0	void *
-	Inspector		
-	Expressions		
-	Return Value		
-	Tooltip		
-When unplugging the USB cable:
-	Locals		
-		hr	2197880852	HRESULT
-		instanceName	@0x5066a8 "USB\VID_0409&PID_005A\5&11976120&0&1"	wchar_t *
-		pThis	@0x13f7a1622	KinectManager *
-		<unnamed 1>	0x0	wchar_t *
-		userData	@0x2efd50	void *
-	Inspector		
-	Expressions		
-	Return Value		
-	Tooltip		
+Originally started on Qt 5.0.2, but downgraded because of OpenGL issues.
