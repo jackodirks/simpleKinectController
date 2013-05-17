@@ -115,7 +115,7 @@ void KinectManager::changeSelected(int i){
 HRESULT KinectManager::initKinect(QSharedPointer<Kinect> kinect){
     HRESULT hr = kinect->initialize();
 	if (FAILED(hr)){
-		emit error("Error while initializing Kinect (HRESULT " + QString::number(hr) + ")";
+        emit error("Error while initializing Kinect (HRESULT " + QString::number(hr) + ")");
 		return hr;
 	}
     connect(kinect.data(),SIGNAL( kinectAngleChanged(long)),this,SIGNAL(kinectAngleChanged(long)));

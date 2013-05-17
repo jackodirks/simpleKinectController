@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     timer.reset(new QTimer());
     timer->setInterval(5000);
+    this->setFixedSize(width(),height());
     connect(timer.get(),SIGNAL(timeout()),this,SLOT(emptyErrorLabel()));
     connect(ui->kinectHeightSlider,SIGNAL(valueChanged(int)),this,SLOT(setNewValue(int)));
     connect(ui->comboBoxKinect,SIGNAL(activated(QString)),this,SIGNAL(dropDownBoxUpdated(QString)));
