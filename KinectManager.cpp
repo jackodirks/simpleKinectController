@@ -8,7 +8,7 @@ KinectManager::KinectManager()
 }
 
 KinectManager::~KinectManager(){
-
+    if (selectedKinect > -1)uninitKinect(kinectMap.value(selectedKinect));
 }
 
 HRESULT KinectManager::initialize(){
@@ -130,13 +130,16 @@ HRESULT KinectManager::initKinect(QSharedPointer<Kinect> kinect){
 
 HRESULT KinectManager::uninitKinect(QSharedPointer<Kinect> kinect){
     emit stopThread();
-    kinect->wait();
+    if (!(kinect->wait(100))){
+        kinect->terminate();
+        kinect->wait();
+    }
     disconnect(kinect.data(),SIGNAL(kinectAngleChanged(long)),this,SIGNAL(kinectAngleChanged(long)));
     disconnect(this,SIGNAL(changeKinectAngle(long)),kinect.data(),SLOT(setKinectAngle(long)));
     disconnect(kinect.data(),SIGNAL(error(QString)),this,SIGNAL(error(QString)));
     disconnect(this,SIGNAL(stopThread()),kinect.data(),SLOT(stopThread()));
     disconnect(kinect.data(),SIGNAL(videoFrame(QByteArray)),this,SIGNAL(sendKinectByteArray(QByteArray)));
-    return kinect ->uninitialize();
+    return kinect->uninitialize();
 }
 
 void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* instanceName, const OLECHAR*, void* userData)

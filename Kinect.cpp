@@ -5,8 +5,6 @@ const int height = 480;
 
 Kinect::Kinect(INuiSensor *nui, QObject* parent) :QThread(parent)
 {
-    nextColorFrameEvent= INVALID_HANDLE_VALUE;
-    videoStreamHandle= INVALID_HANDLE_VALUE;
     this->nui = nui;
     connect(&watcher,SIGNAL(finished()),this,SLOT(fireKinectAngle()));
     continueThread = true;
@@ -18,6 +16,7 @@ Kinect::~Kinect(){
 }
 
 HRESULT Kinect::initialize(){
+    HANDLE nextColorFrameEvent, videoStreamHandle;
     HRESULT hr;
     DWORD flags = NUI_INITIALIZE_FLAG_USES_COLOR;
     hr = nui->NuiInitialize(flags);
@@ -30,12 +29,13 @@ HRESULT Kinect::initialize(){
                 2,
                 nextColorFrameEvent,
                 &videoStreamHandle);
+    this->nextColorFrameEvent.Attach(nextColorFrameEvent);
+    this->videoStreamHandle.Attach(videoStreamHandle);
     if (FAILED(hr)) return hr;
     return S_OK;
 }
 
 HRESULT Kinect::uninitialize(){
-    if (nextColorFrameEvent && nextColorFrameEvent != INVALID_HANDLE_VALUE)CloseHandle(nextColorFrameEvent);
     nui->NuiShutdown();
     return S_OK;
 }

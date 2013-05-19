@@ -35,8 +35,8 @@ public:
 
 private:
     CComPtr<INuiSensor> nui;
-    HANDLE nextColorFrameEvent;
-    HANDLE videoStreamHandle;
+    CHandle nextColorFrameEvent;
+    CHandle videoStreamHandle;
     QFutureWatcher<void> watcher;
     static void handleKinectHeight(long angle, Kinect* pThis);
 
