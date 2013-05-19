@@ -1,8 +1,10 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include "KinectManager.h"
+#include <QSplashScreen>
 #include <QMap>
 #include <Qt>
+#include <QSplashScreen>
 
 int main(int argc, char *argv[])
 {
@@ -22,6 +24,7 @@ int main(int argc, char *argv[])
     QObject::connect(&w,SIGNAL(updateKinectAngle(long)),&manager,SIGNAL(changeKinectAngle(long)));
 
     HRESULT hr = manager.initialize();
+
     if (FAILED(hr)) w.displayError("Something big happend: " + QString::number(hr));
 
     return a.exec();

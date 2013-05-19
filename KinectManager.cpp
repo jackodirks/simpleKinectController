@@ -81,8 +81,10 @@ void KinectManager::changeSelected(int i){
             while (it.hasNext()){
                 it.next();
                 if ((FAILED (it.value()->getStatus()))) continue;
-                selectedKinect = it.key();
-				if (SUCCEEDED(initKinect(it.value()))) break;
+                if (SUCCEEDED(initKinect(it.value()))){
+                    selectedKinect = it.key();
+                    break;
+                }
             }
             emit selectionChanged(nameMap.value(selectedKinect));
             if (selectedKinect == -1) emit error("No usable Kinect found.");
@@ -92,15 +94,17 @@ void KinectManager::changeSelected(int i){
         emit selectionChanged(nameMap.value(selectedKinect));
         emit error("This Kinect is not usable");
     }
-    else {
-        HRESULT hr = uninitKinect(kinectMap.value(selectedKinect));
-        if (FAILED(hr)){
-            emit error("Failed to select Kinect:" + hresultToQstring(hr));
-            selectedKinect = -1;
-            emit selectionChanged(nameMap.value(selectedKinect));
-            return;
+    else{
+        if (selectedKinect != -1) {
+            HRESULT hr = uninitKinect(kinectMap.value(selectedKinect));
+            if (FAILED(hr)){
+                emit error("Failed to select Kinect:" + hresultToQstring(hr));
+                selectedKinect = -1;
+                emit selectionChanged(nameMap.value(selectedKinect));
+                return;
+            }
         }
-        hr = initKinect(kinectMap.value(i));
+        HRESULT hr = initKinect(kinectMap.value(i));
         if (FAILED(hr)){
             emit error("Failed to select Kinect:" + hresultToQstring(hr));
             selectedKinect = -1;
@@ -114,10 +118,10 @@ void KinectManager::changeSelected(int i){
 
 HRESULT KinectManager::initKinect(QSharedPointer<Kinect> kinect){
     HRESULT hr = kinect->initialize();
-	if (FAILED(hr)){
+    if (FAILED(hr)){
         emit error("Error while initializing Kinect (HRESULT " + QString::number(hr) + ")");
-		return hr;
-	}
+        return hr;
+    }
     connect(kinect.data(),SIGNAL( kinectAngleChanged(long)),this,SIGNAL(kinectAngleChanged(long)));
     connect(this,SIGNAL(changeKinectAngle(long)),kinect.data(),SLOT(setKinectAngle(long)));
     connect(kinect.data(),SIGNAL(error(QString)),this,SIGNAL(error(QString)));

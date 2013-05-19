@@ -29,9 +29,12 @@ HRESULT Kinect::initialize(){
                 2,
                 nextColorFrameEvent,
                 &videoStreamHandle);
+    if (FAILED(hr)){
+        //uninitialize();
+        return hr;
+    }
     this->nextColorFrameEvent.Attach(nextColorFrameEvent);
     this->videoStreamHandle.Attach(videoStreamHandle);
-    if (FAILED(hr)) return hr;
     return S_OK;
 }
 
