@@ -12,7 +12,9 @@ Kinect::Kinect(INuiSensor *nui, QObject* parent) :QThread(parent)
 
 Kinect::~Kinect(){
     stopThread();
-    uninitialize();
+    this->wait();
+    this->watcher.waitForFinished();
+    uninitialize();    
 }
 
 HRESULT Kinect::initialize(){
