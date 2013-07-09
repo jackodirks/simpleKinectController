@@ -7,9 +7,13 @@ OpenGLWidget::OpenGLWidget(QWidget *parent) : QGLWidget(parent)
     screen_height = 480;
 }
 
+OpenGLWidget::~OpenGLWidget(){
+    glDeleteTextures(1,&textureId); //Remove the texture space in the Graphical Memory
+}
+
 void OpenGLWidget::initializeGL(){
-    glEnable(GL_TEXTURE_2D);
-    glGenTextures(1,&textureId);
+    glEnable(GL_TEXTURE_2D); //Enables the drawing of 2D textures
+    glGenTextures(1,&textureId); //Generates space in the Graphical Memory for a (1) texture and binds this space to textureID
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -43,7 +47,7 @@ void OpenGLWidget::paintGL(){
 }
 
 void OpenGLWidget::receiveByteArray(QByteArray array){
-    glBindTexture(GL_TEXTURE_2D,textureId);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) array.data());
+    glBindTexture(GL_TEXTURE_2D,textureId);
     updateGL();
 }

@@ -16,6 +16,7 @@ class OpenGLWidget : public QGLWidget
 
 public:
     OpenGLWidget(QWidget *parent = 0);
+    ~OpenGLWidget();
 
 private:
     GLuint textureId;
