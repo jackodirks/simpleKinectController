@@ -37,6 +37,7 @@ signals:
     void dropDownBoxUpdated(QString str);
     void updateKinectAngle(long angle);
     void receiveVGAArray(QByteArray array);
+    void setStatus(QString msg, int time);
 };
 
 #endif // MAINWINDOW_H

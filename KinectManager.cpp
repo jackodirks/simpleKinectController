@@ -161,6 +161,7 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
     }
     //If the index is still -1 this is a new Kinect:
     if (index == -1){
+        emit pThis->status("New Kinect found");
         for (index = 0; pThis->kinectMap[index] != nullptr; ++index); //Find the first empty int
         //Try to make the Kinect
         INuiSensor* nui;
@@ -174,7 +175,8 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
         pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
         emit pThis->mapChanged(pThis->nameMap);
         if (pThis->selectedKinect == -1) pThis->changeSelected();
-    } else {
+    } else { //This was a KInect that we already knew
+        emit pThis -> status ("Kinect " + pThis->nameMap[index] + " has been disconnected.");
         if (hr == E_NUI_NOTCONNECTED){  //The Kinect has been disconnected
             if(pThis->selectedKinect == index){ //The Kinect is the current active Kinect
                 pThis->uninitKinect(pThis->kinectMap.value(index));
@@ -183,7 +185,8 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
             pThis->kinectMap.remove(index);
             pThis->nameMap.remove(index);
         } else {    //The status of the kinect has changed and it needs to be updated
-            pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
+            emit pThis->status ("The status of Kinect " + pThis->nameMap[index] + " has changed to " + (pThis->hresultToQstring(hr) == "" ? "OK" : "<" +pThis->hresultToQstring(hr)) + ".");
+            pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr)) + ">");
             if (FAILED(hr) && pThis->selectedKinect == index){
                 pThis->uninitKinect(pThis->kinectMap.value(index));
                 pThis->selectedKinect = -1;

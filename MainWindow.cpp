@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->comboBoxKinect,SIGNAL(activated(QString)),this,SIGNAL(dropDownBoxUpdated(QString)));
     connect(ui->pushButtonApplyHeight,SIGNAL(clicked()),this,SLOT(buttonPressToUpdateKinectAngle()));
     connect(this,SIGNAL(receiveVGAArray(QByteArray)),ui->imageDisplayGLWidget,SLOT(receiveByteArray(QByteArray)));
+    connect(this,SIGNAL(setStatus(QString,int)),this->statusBar(),SLOT(showMessage(QString,int)));
 }
 
 MainWindow::~MainWindow()

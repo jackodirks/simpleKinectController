@@ -26,6 +26,7 @@ signals:
     void mapChanged(QMap<int,QString> kinectMap);
     void selectionChanged(QString str);
     void error (QString error);
+    void status (QString msg, int timeout=2000);
     void kinectAngleChanged(long height); //outgoing signal
     void changeKinectAngle(long angle); //incoming signal
     void stopThread();

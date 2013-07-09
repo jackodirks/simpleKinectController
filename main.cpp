@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     QObject::connect(&manager,SIGNAL(error(QString)),&w,SLOT(displayError(QString)));
     QObject::connect(&manager,SIGNAL(kinectAngleChanged(long)),&w,SLOT(kinectAngle(long)));
     QObject::connect(&manager,SIGNAL(sendKinectByteArray(QByteArray)),&w,SIGNAL(receiveVGAArray(QByteArray)));
+    QObject::connect(&manager,SIGNAL(status(QString,int)),&w,SIGNAL(setStatus(QString,int)));
 
     QObject::connect(&w,SIGNAL(dropDownBoxUpdated(QString)),&manager,SLOT(changeSelected(QString)));
     QObject::connect(&w,SIGNAL(updateKinectAngle(long)),&manager,SIGNAL(changeKinectAngle(long)));
