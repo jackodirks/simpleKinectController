@@ -9,14 +9,12 @@ OpenGLWidget::OpenGLWidget(QWidget *parent) : QGLWidget(parent)
 
 void OpenGLWidget::initializeGL(){
     glEnable(GL_TEXTURE_2D);
-
     glGenTextures(1,&textureId);
     glBindTexture(GL_TEXTURE_2D, textureId);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
-
     glClearColor(0,0,0,0);
     glClearDepth(1.0f);
 }

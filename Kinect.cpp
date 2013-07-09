@@ -14,7 +14,7 @@ Kinect::~Kinect(){
     stopThread();
     this->wait();
     this->watcher.waitForFinished();
-    uninitialize();    
+    uninitialize();
 }
 
 HRESULT Kinect::initialize(){
@@ -48,7 +48,20 @@ HRESULT Kinect::uninitialize(){
 void Kinect::fireKinectAngle(){
     long kinectAngle;
     HRESULT hr = nui->NuiCameraElevationGetAngle(&kinectAngle);
-    if (FAILED(hr)) emit error("Something went wrong when getting the Kinect Height: " + QString::number(hr));
+    if (FAILED(hr)){
+        QString errormsg;
+        switch (hr){
+        case E_POINTER:
+            errormsg = "The new angle value is invalid (E_POINTER).";
+            break;
+        case E_NUI_DEVICE_NOT_READY:
+            errormsg = "Device is not ready (E_NUI_DEVICE_NOT_READY).";
+            break;
+        default:
+            errormsg = "Unknown error: " + QString::number(hr) + ".";
+        }
+        emit error("Something went wrong when getting the Kinect Height: " + errormsg);
+    }
     else emit kinectAngleChanged(kinectAngle);
 }
 
@@ -70,15 +83,30 @@ void Kinect::run(){
     continueThread = true;
 }
 
-void Kinect::setKinectAngle(long angle){       
-
+void Kinect::setKinectAngle(long angle){
     QFuture<void> future = QtConcurrent::run(Kinect::handleKinectHeight,angle,this);
     watcher.setFuture(future);
 }
 
 void Kinect::handleKinectHeight(long angle, Kinect* pThis){
     HRESULT hr = pThis->nui->NuiCameraElevationSetAngle(angle);
-    if (FAILED(hr)) emit pThis->error("Something went wrong while changing the Kinect Height: " + QString::number(hr));
+    if (FAILED(hr)){
+        QString errormsg;
+        switch(hr){
+        case ERROR_RETRY:
+            errormsg = "not enough time between two tries to change Kinect height (ERROR_RETRY).";
+            break;
+        case ERROR_TOO_MANY_CMDS:
+            errormsg = "too many calls to change Kinect height in a short time (ERROR_TOO_MANY_CMDS).";
+            break;
+        case E_NUI_DEVICE_NOT_READY:
+            errormsg = "Device is not ready (E_NUI_DEVICE_NOT_READY).";
+            break;
+        default:
+            errormsg = "Unknown error: " + QString::number(hr) + ".";
+        }
+        emit pThis->error("Something went wrong while changing the Kinect Height: " + errormsg);
+    }
     return;
 }
 

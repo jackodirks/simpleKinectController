@@ -74,9 +74,9 @@ void KinectManager::changeSelected(int i){
     if (i == -1){ //"default": check if there is a Kinect currently active and if yes do nothing
         if (selectedKinect != -1){
             emit selectionChanged(nameMap.value(selectedKinect));
-            return; //If there is no Kinect chosen pick the default one (first usable one in the map)
+            return;
         }
-        else{
+        else{ //If there is no Kinect chosen pick the default one (first usable one in the map)
             QMapIterator<int, QSharedPointer<Kinect>> it (kinectMap);
             while (it.hasNext()){
                 it.next();
@@ -176,7 +176,7 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
         pThis->changeSelected();
     } else {
         if (hr == E_NUI_NOTCONNECTED){  //The Kinect has been disconnected
-            pThis->uninitKinect(pThis->kinectMap.value(index));
+            //pThis->uninitKinect(pThis->kinectMap.value(index));
             pThis->kinectMap.remove(index);
             pThis->nameMap.remove(index);
             pThis->selectedKinect = -1;
