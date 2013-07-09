@@ -41,7 +41,7 @@ HRESULT Kinect::initialize(){
 }
 
 HRESULT Kinect::uninitialize(){
-    if (nui.p != NULL) nui->NuiShutdown();
+    if (nui.p != nullptr) nui->NuiShutdown();
     return S_OK;
 }
 

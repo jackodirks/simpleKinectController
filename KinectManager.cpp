@@ -8,7 +8,7 @@ KinectManager::KinectManager()
 }
 
 KinectManager::~KinectManager(){
-    if (selectedKinect > -1)uninitKinect(kinectMap.value(selectedKinect));
+    if (selectedKinect != -1)uninitKinect(kinectMap.value(selectedKinect));
 }
 
 HRESULT KinectManager::initialize(){
@@ -90,7 +90,7 @@ void KinectManager::changeSelected(int i){
             if (selectedKinect == -1) emit error("No usable Kinect found.");
         }
     }
-    else if (kinectMap.value(i) == nullptr || FAILED(kinectMap.value(i)->getStatus())){ //unusable kinect (or non-existing one)
+    else if (FAILED(kinectMap.value(i)->getStatus()) || kinectMap.value(i) == nullptr){ //unusable kinect (or non-existing one)
         emit selectionChanged(nameMap.value(selectedKinect));
         emit error("This Kinect is not usable");
     }
@@ -176,10 +176,12 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
         if (pThis->selectedKinect == -1) pThis->changeSelected();
     } else {
         if (hr == E_NUI_NOTCONNECTED){  //The Kinect has been disconnected
-            //pThis->uninitKinect(pThis->kinectMap.value(index));
+            if(pThis->selectedKinect == index){ //The Kinect is the current active Kinect
+                pThis->uninitKinect(pThis->kinectMap.value(index));
+                pThis->selectedKinect = -1;
+            }
             pThis->kinectMap.remove(index);
             pThis->nameMap.remove(index);
-            if (pThis->selectedKinect == index) pThis->selectedKinect = -1;
         } else {    //The status of the kinect has changed and it needs to be updated
             pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
             if (FAILED(hr) && pThis->selectedKinect == index){
