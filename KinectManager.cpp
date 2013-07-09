@@ -173,13 +173,13 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
         pThis->kinectMap.insert(index,kinect);
         pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
         emit pThis->mapChanged(pThis->nameMap);
-        pThis->changeSelected();
+        if (pThis->selectedKinect == -1) pThis->changeSelected();
     } else {
         if (hr == E_NUI_NOTCONNECTED){  //The Kinect has been disconnected
             //pThis->uninitKinect(pThis->kinectMap.value(index));
             pThis->kinectMap.remove(index);
             pThis->nameMap.remove(index);
-            pThis->selectedKinect = -1;
+            if (pThis->selectedKinect == index) pThis->selectedKinect = -1;
         } else {    //The status of the kinect has changed and it needs to be updated
             pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
             if (FAILED(hr) && pThis->selectedKinect == index){
