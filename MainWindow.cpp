@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButtonApplyHeight,SIGNAL(clicked()),this,SLOT(buttonPressToUpdateKinectAngle()));
     connect(this,SIGNAL(receiveVGAArray(QByteArray)),ui->imageDisplayGLWidget,SLOT(receiveByteArray(QByteArray)));
     connect(this,SIGNAL(setStatus(QString,int)),this->statusBar(),SLOT(showMessage(QString,int)));
+    connect(ui->checkBoxVerticalFlip,SIGNAL(toggled(bool)),ui->imageDisplayGLWidget,SLOT(flipImage(bool)));
 }
 
 MainWindow::~MainWindow()

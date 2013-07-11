@@ -167,6 +167,19 @@
      </rect>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBoxVerticalFlip">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>290</y>
+      <width>141</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Flip the image vertically</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

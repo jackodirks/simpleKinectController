@@ -20,16 +20,17 @@ public:
 
 private:
     GLuint textureId;
-
+    bool vertFlip;
     int screen_width, screen_height;
 
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
+    QByteArray modifyImage (QByteArray imageArray, const int width, const int height);
 
 public slots:
     void receiveByteArray(QByteArray array);
-
+    void flipImage(bool b);
 };
 
 #endif // OPENGLWIDGET_H
