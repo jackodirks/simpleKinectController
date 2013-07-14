@@ -6,16 +6,26 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timer.reset(new QTimer());
-    timer->setInterval(5000);
-    this->setFixedSize(width(),height());
-    connect(timer.get(),SIGNAL(timeout()),this,SLOT(emptyErrorLabel()));
+    clearErrorTimer.reset(new QTimer());
+    fpsTimer.reset(new QTimer);
+    fpsMutex.reset(new QMutex);
+    fpsLabel.reset(new QLabel);
+    statusBar()->addPermanentWidget(fpsLabel.get());
+    frames = 0;
+    clearErrorTimer->setInterval(5000);
+    clearErrorTimer->setSingleShot(true);
+    fpsTimer->setInterval(1000);
+    setFixedSize(width(),height());
+    connect(ui->imageDisplayGLWidget,SIGNAL(gotFrame()),this,SLOT(gotFrame())); //Connects the signal that the OpenGL Widget sends when it has received and processed a frame to the slot here that counts the frames
+    connect(fpsTimer.get(),SIGNAL(timeout()),this,SLOT(fpsTimeOut())); //Connects the FPSTimer to its slot that updates the FPS label
+    connect(clearErrorTimer.get(),SIGNAL(timeout()),this,SLOT(emptyErrorLabel()));
     connect(ui->kinectHeightSlider,SIGNAL(valueChanged(int)),this,SLOT(setNewValue(int)));
     connect(ui->comboBoxKinect,SIGNAL(activated(QString)),this,SIGNAL(dropDownBoxUpdated(QString)));
     connect(ui->pushButtonApplyHeight,SIGNAL(clicked()),this,SLOT(buttonPressToUpdateKinectAngle()));
     connect(this,SIGNAL(receiveVGAArray(QByteArray)),ui->imageDisplayGLWidget,SLOT(receiveByteArray(QByteArray)));
     connect(this,SIGNAL(setStatus(QString,int)),this->statusBar(),SLOT(showMessage(QString,int)));
     connect(ui->checkBoxVerticalFlip,SIGNAL(toggled(bool)),ui->imageDisplayGLWidget,SLOT(flipImage(bool)));
+    fpsTimer->start();
 }
 
 MainWindow::~MainWindow()
@@ -45,7 +55,7 @@ void MainWindow::setComboBox(QString str){
 
 void MainWindow::displayError(QString error){    
     ui->labelError->setText("<font color='red'>" + error + "</font>");
-    timer->start();
+    clearErrorTimer->start();
 }
 
 void MainWindow::emptyErrorLabel(){
@@ -59,4 +69,17 @@ void MainWindow::kinectAngle(long angle){
 
 void MainWindow::buttonPressToUpdateKinectAngle(){
     emit updateKinectAngle(ui->kinectHeightSlider->value());
+}
+
+void MainWindow::gotFrame(){
+    fpsMutex->lock();
+    ++frames;
+    fpsMutex->unlock();
+}
+
+void MainWindow::fpsTimeOut(){
+    fpsMutex->lock();
+    fpsLabel->setText(QString::number(frames) + " FPS");
+    frames = 0;
+    fpsMutex->unlock();
 }

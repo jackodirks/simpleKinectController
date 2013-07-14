@@ -31,6 +31,8 @@ private:
 public slots:
     void receiveByteArray(QByteArray array);
     void flipImage(bool b);
+signals:
+    void gotFrame();
 };
 
 #endif // OPENGLWIDGET_H

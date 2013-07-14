@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <memory>
 #include "OpenGLWidget.h"
+#include <QMutex>
+#include <QLabel>
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +24,11 @@ public:
     
 private:
     Ui::MainWindow *ui;
-    std::unique_ptr<QTimer> timer;
+    std::unique_ptr<QTimer> clearErrorTimer;
+    std::unique_ptr<QTimer> fpsTimer;
+    int frames;
+    std::unique_ptr<QMutex> fpsMutex;
+    std::unique_ptr<QLabel> fpsLabel;
 private slots:
     void setNewValue(int val);
 public slots:
@@ -33,6 +39,8 @@ public slots:
 private slots:
     void emptyErrorLabel();
     void buttonPressToUpdateKinectAngle();
+    void gotFrame();
+    void fpsTimeOut();
 signals:
     void dropDownBoxUpdated(QString str);
     void updateKinectAngle(long angle);

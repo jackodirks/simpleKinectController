@@ -49,6 +49,7 @@ void OpenGLWidget::receiveByteArray(QByteArray array){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) array.data());
     glBindTexture(GL_TEXTURE_2D,textureId);
     updateGL();
+    emit gotFrame();
 }
 
 QByteArray OpenGLWidget::modifyImage(QByteArray imageArray, const int width, const int height){
