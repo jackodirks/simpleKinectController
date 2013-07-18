@@ -2,8 +2,7 @@
 #define OPENGLWIDGET_H
 
 #include <windows.h>
-#include <gl/GL.h>
-#include <gl/GLU.h>
+#include <gl/glew.h>
 #include <QByteArray>
 #include <QGLWidget>
 #include <memory>
@@ -19,9 +18,10 @@ public:
     ~OpenGLWidget();
 
 private:
-    GLuint textureId;
+    GLuint textureId, fboId;
     bool vertFlip;
     int screen_width, screen_height;
+    unsigned char blackScreen[640*480*4];
 
     void initializeGL();
     void resizeGL(int w, int h);

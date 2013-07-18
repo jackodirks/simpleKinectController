@@ -12,6 +12,8 @@ INCLUDEPATH += "C:/Program Files/Microsoft SDKs/Kinect/v1.7/inc"
 INCLUDEPATH += "C:/Program Files (x86)/Windows Kits/8.0"
 LIBS += -L"C:/Program Files/Microsoft SDKs/Kinect/v1.7/lib/amd64/" -lKinect10
 LIBS += -lOpenGL32
+LIBS += -lglew32
+LIBS += -lglu32
 
 SOURCES += main.cpp\
         MainWindow.cpp \
