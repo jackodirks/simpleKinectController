@@ -16,11 +16,13 @@ MainWindow::MainWindow(QWidget *parent) :
     clearErrorTimer->setSingleShot(true);
     fpsTimer->setInterval(1000);
     setFixedSize(width(),height());
+    std::unique_ptr<QThread> GLThread(new QThread());
+    ui->imageDisplayGLWidget->moveToThread(GLThread.get());
     connect(ui->imageDisplayGLWidget,SIGNAL(gotFrame()),this,SLOT(gotFrame())); //Connects the signal that the OpenGL Widget sends when it has received and processed a frame to the slot here that counts the frames
     connect(fpsTimer.get(),SIGNAL(timeout()),this,SLOT(fpsTimeOut())); //Connects the FPSTimer to its slot that updates the FPS label
-    connect(clearErrorTimer.get(),SIGNAL(timeout()),this,SLOT(emptyErrorLabel()));
-    connect(ui->kinectHeightSlider,SIGNAL(valueChanged(int)),this,SLOT(setNewValue(int)));
-    connect(ui->comboBoxKinect,SIGNAL(activated(QString)),this,SIGNAL(dropDownBoxUpdated(QString)));
+    connect(clearErrorTimer.get(),SIGNAL(timeout()),this,SLOT(emptyErrorLabel())); //Connects the errortimeouttimer to the slot that clears the error
+    connect(ui->kinectHeightSlider,SIGNAL(valueChanged(int)),this,SLOT(setNewValue(int))); //Connects the Kinect Height slider from the GUI to the label that represends the current position of the slider
+    connect(ui->comboBoxKinect,SIGNAL(activated(QString)),this,SIGNAL(dropDownBoxUpdated(QString))); //Updates the current Kinect after the dropdownbox has been closed
     connect(ui->pushButtonApplyHeight,SIGNAL(clicked()),this,SLOT(buttonPressToUpdateKinectAngle()));
     connect(this,SIGNAL(receiveVGAArray(QByteArray)),ui->imageDisplayGLWidget,SLOT(receiveByteArray(QByteArray)));
     connect(this,SIGNAL(setStatus(QString,int)),this->statusBar(),SLOT(showMessage(QString,int)));

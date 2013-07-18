@@ -90,7 +90,7 @@ void KinectManager::changeSelected(int i){
             if (selectedKinect == -1) emit error("No usable Kinect found.");
         }
     }
-    else if (FAILED(kinectMap.value(i)->getStatus()) || kinectMap.value(i) == nullptr){ //unusable kinect (or non-existing one)
+    else if (kinectMap.value(i)->getStatus() == S_NUI_INITIALIZING || FAILED(kinectMap.value(i)->getStatus()) || kinectMap.value(i) == nullptr){ //unusable kinect (or non-existing one)
         emit selectionChanged(nameMap.value(selectedKinect));
         emit error("This Kinect is not usable");
     }
@@ -154,7 +154,7 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
     QMapIterator<int, QSharedPointer<Kinect>> it (pThis->kinectMap);
     while (it.hasNext()){
         it.next();
-        if (wcscmp(it.value()->getDeviceConnectionId(),instanceName) == 0){
+        if (wcscmp(it.value()->getDeviceConnectionId(),instanceName) == 0){ //Check if the DeviceConnectionID is the same as the given InstanceName
             index = it.key();
             break;
         }
@@ -174,6 +174,7 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
         pThis->kinectMap.insert(index,kinect);
         pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
         emit pThis->mapChanged(pThis->nameMap);
+        emit pThis->changeSelected(-1); //Update the dropbownbox with the currently selected Kinect, this is for if the index of the new Kinect is lower then the index of the old one
         if (pThis->selectedKinect == -1) pThis->changeSelected();
     } else { //This was a KInect that we already knew
         emit pThis -> status ("Kinect " + pThis->nameMap[index] + " has been disconnected.");

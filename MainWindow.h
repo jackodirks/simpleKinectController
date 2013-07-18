@@ -8,6 +8,7 @@
 #include "OpenGLWidget.h"
 #include <QMutex>
 #include <QLabel>
+#include <QThread>
 
 namespace Ui {
 class MainWindow;
