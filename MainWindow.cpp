@@ -16,8 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
     clearErrorTimer->setSingleShot(true);
     fpsTimer->setInterval(1000);
     setFixedSize(width(),height());
-    std::unique_ptr<QThread> GLThread(new QThread());
-    ui->imageDisplayGLWidget->moveToThread(GLThread.get());
     connect(ui->imageDisplayGLWidget,SIGNAL(gotFrame()),this,SLOT(gotFrame())); //Connects the signal that the OpenGL Widget sends when it has received and processed a frame to the slot here that counts the frames
     connect(fpsTimer.get(),SIGNAL(timeout()),this,SLOT(fpsTimeOut())); //Connects the FPSTimer to its slot that updates the FPS label
     connect(clearErrorTimer.get(),SIGNAL(timeout()),this,SLOT(emptyErrorLabel())); //Connects the errortimeouttimer to the slot that clears the error

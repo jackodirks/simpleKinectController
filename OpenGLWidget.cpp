@@ -14,9 +14,12 @@ OpenGLWidget::~OpenGLWidget(){
 void OpenGLWidget::initializeGL(){
     glEnable(GL_TEXTURE_2D); //Enables the drawing of 2D textures
     glGenTextures(1,&textureId); //Generates space in the Graphical Memory for a (1) texture and binds this space to textureID
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) NULL);
     glBindTexture(GL_TEXTURE_2D, textureId); //Binds the GL_TEXTURE_2D to the textureId
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) NULL);
+    glBindTexture(GL_TEXTURE_2D, textureId); //Binds the GL_TEXTURE_2D to the textureId
     glClearColor(0,0,0,0);
     glClearDepth(1.0f);
 }
@@ -46,7 +49,8 @@ void OpenGLWidget::paintGL(){
 
 void OpenGLWidget::receiveByteArray(QByteArray array){
     array = modifyImage(array, width(),height());
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) array.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*)array.data());
+    //glTexSubImage2D(GL_TEXTURE_2D, 0,0,0,width(), height(), GL_RGBA, GL_UNSIGNED_BYTE,(GLvoid*)array.data());
     glBindTexture(GL_TEXTURE_2D,textureId);
     updateGL();
     emit gotFrame();
@@ -57,6 +61,7 @@ QByteArray OpenGLWidget::modifyImage(QByteArray imageArray, const int width, con
         /* Each pixel constist of four unisgned chars: Red Green Blue Alpha.
          * The field is normally 640*480, this means that the whole picture is in fact 640*4 uChars wide.
          * The whole ByteArray is onedimensional, this means that 640*4 is the red of the first pixel of the second row
+         * This function is EXTREMELY SLOW
          */
         QByteArray tempArray = imageArray;
         for (int h = 0; h < height; ++h){
