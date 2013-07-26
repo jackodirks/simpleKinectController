@@ -5,5 +5,3 @@ OpenGL will be used to render the images.
 Created with Qt 4.8.4 and Microsoft Kinect SDK. Used compiler is the MSVC2012 x86_64 compiler (yes, I compiled my very own Qt 4.8.4 for this).
 
 Originally started on Qt 5.0.2, but downgraded because of OpenGL issues.
-
-Using GLEW, libraries will be included, total package downloaded from here: http://glew.sourceforge.net/index.html
