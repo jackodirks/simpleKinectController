@@ -15,18 +15,19 @@ OpenGLWidget::~OpenGLWidget(){
 }
 
 void OpenGLWidget::initializeGL(){
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+      /* Problem: glewInit failed, something is seriously wrong. */
+
+    }
     glEnable(GL_TEXTURE_2D); //Enables the drawing of 2D textures
-    wglGetProcAddress("glGenFramebuffers");
-    glGenTextures(1,&textureId); //Generates space in the Graphical Memory for a (1) texture and binds this space to textureID
-    //glGenFramebuffers(1,&fboId); //Generates space in the Graphical Memory for a (1) FBO (Frame Buffer Object) and binds this space to fboId
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) NULL);
     glBindTexture(GL_TEXTURE_2D, textureId); //Binds the GL_TEXTURE_2D to the textureId
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) blackScreen); //Strart the program off with a black screen
     glBindTexture(GL_TEXTURE_2D, textureId); //Binds the GL_TEXTURE_2D to the textureId
-    glClearColor(0,0,0,0);
-    glClearDepth(1.0f);
 }
 
 void OpenGLWidget::resizeGL(int width, int height){
@@ -39,6 +40,7 @@ void OpenGLWidget::resizeGL(int width, int height){
 }
 
 void OpenGLWidget::paintGL(){
+    glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 0.0f);
@@ -53,34 +55,23 @@ void OpenGLWidget::paintGL(){
 }
 
 void OpenGLWidget::receiveByteArray(QByteArray array){
-    array = modifyImage(array, width(),height());
+    //array = modifyImage(array, width(),height());
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*)array.data());
-    //glTexSubImage2D(GL_TEXTURE_2D, 0,0,0,width(), height(), GL_RGBA, GL_UNSIGNED_BYTE,(GLvoid*)array.data());
+
     glBindTexture(GL_TEXTURE_2D,textureId);
+
     updateGL();
     emit gotFrame();
 }
 
-QByteArray OpenGLWidget::modifyImage(QByteArray imageArray, const int width, const int height){
-    if (vertFlip){
-        /* Each pixel constist of four unisgned chars: Red Green Blue Alpha.
-         * The field is normally 640*480, this means that the whole picture is in fact 640*4 uChars wide.
-         * The whole ByteArray is onedimensional, this means that 640*4 is the red of the first pixel of the second row
-         * This function is EXTREMELY SLOW
-         */
-        QByteArray tempArray = imageArray;
-        for (int h = 0; h < height; ++h){
-            for (int w = 0; w < width/2; ++w){
-                for (int i = 0; i < 4; ++i){
-                    imageArray.data()[h*width*4 + 4*w + i] = tempArray.data()[h*width*4 + (4*width - 4*w) + i ];
-                    imageArray.data()[h*width*4 + (4*width - 4*w) + i] = tempArray.data()[h*width*4 + 4*w + i];
-                }
-            }
-        }
-    }
-    return imageArray;
-}
-
 void OpenGLWidget::flipImage(bool b){
-    vertFlip = b;
+    if (b) {
+        glMatrixMode(GL_PROJECTION);
+        glScalef(-1,1,1);
+        glTranslatef(-width(),0,0);
+    } else {
+//        glMatrixMode(GL_PROJECTION);
+//        glScalef(-1,1,1);
+//        glTranslatef(width(),0,0);
+    }
 }

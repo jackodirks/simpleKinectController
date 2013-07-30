@@ -26,7 +26,6 @@ private:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
-    QByteArray modifyImage (QByteArray imageArray, const int width, const int height);
 
 public slots:
     void receiveByteArray(QByteArray array);
