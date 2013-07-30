@@ -18,10 +18,9 @@ public:
     ~OpenGLWidget();
 
 private:
-    GLuint textureId, fboId;
+    GLuint textureId;
     bool vertFlip;
     int screen_width, screen_height;
-    unsigned char blackScreen[640*480*4];
 
     void initializeGL();
     void resizeGL(int w, int h);

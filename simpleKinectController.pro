@@ -15,6 +15,7 @@ LIBS += -lOpenGL32
 LIBS += -lglew32
 LIBS += -lglu32
 
+
 SOURCES += main.cpp\
         MainWindow.cpp \
     Kinect.cpp \
