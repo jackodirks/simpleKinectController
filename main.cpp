@@ -9,7 +9,6 @@
 int main(int argc, char *argv[])
 {
     //initialize GUI
-
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
@@ -26,9 +25,7 @@ int main(int argc, char *argv[])
     QObject::connect(&w,SIGNAL(updateKinectAngle(long)),&manager,SIGNAL(changeKinectAngle(long)));
 
     HRESULT hr = manager.initialize();
-
     if (FAILED(hr)) w.displayError("Something big happend: " + QString::number(hr));
-
     return a.exec();
 }
 

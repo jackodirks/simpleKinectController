@@ -63,7 +63,6 @@ void MainWindow::emptyErrorLabel(){
 }
 
 void MainWindow::kinectAngle(long angle){
-    ui->kinectHeightSlider->setValue(angle);
     ui->labelCurHeight->setText(QString::number(angle));
 }
 
