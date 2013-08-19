@@ -6,6 +6,10 @@ OpenGLWidget::OpenGLWidget(QWidget *parent) : QGLWidget(parent)
     screen_height = 480;
     vertFlip = false;
     std::fill_n(blackScreen,640*480*4,0);
+    blackoutTimer.reset(new QTimer());
+    blackoutTimer->setInterval(3000);
+    blackoutTimer->start();
+    connect(blackoutTimer.get(),SIGNAL(timeout()),this,SLOT(blackOutScreen()));
 }
 
 OpenGLWidget::~OpenGLWidget(){
@@ -61,6 +65,8 @@ void OpenGLWidget::receiveByteArray(QByteArray array){
     glBindTexture(GL_TEXTURE_2D,textureId);
     updateGL();
     emit gotFrame();
+    blackoutTimer->start(); //Restarts the timer
+
 }
 
 void OpenGLWidget::flipImage(bool b){
@@ -68,4 +74,10 @@ void OpenGLWidget::flipImage(bool b){
         glMatrixMode(GL_PROJECTION);
         glScalef(-1,1,1);
         glTranslatef(-width(),0,0);
+}
+
+void OpenGLWidget::blackOutScreen(){
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width(), height(), 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, (GLvoid*) blackScreen);
+    glBindTexture(GL_TEXTURE_2D, textureId); //Binds the GL_TEXTURE_2D to the textureId
+    updateGL();
 }

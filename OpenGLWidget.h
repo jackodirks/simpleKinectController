@@ -6,8 +6,7 @@
 #include <QByteArray>
 #include <QGLWidget>
 #include <memory>
-
-
+#include <QTimer>
 
 class OpenGLWidget : public QGLWidget
 {
@@ -25,10 +24,12 @@ private:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
+    std::unique_ptr<QTimer> blackoutTimer; //This timer resets the screen to black if there has not been a fram for 3 seconds.
 
 public slots:
     void receiveByteArray(QByteArray array);
     void flipImage(bool b);
+    void blackOutScreen();
 signals:
     void gotFrame();
 };

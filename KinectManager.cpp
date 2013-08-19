@@ -30,7 +30,7 @@ HRESULT KinectManager::initialize(){
         QSharedPointer<Kinect> kinect(new Kinect(nui));
         kinectMap.insert(i,kinect);
         hr = kinect->getStatus();
-        nameMap.insert(i,"Kinect"+QString::number(i)+ (hresultToQstring(hr) == "" ? "" : "<" +hresultToQstring(hr) + ">"));
+        nameMap.insert(i,"Kinect"+QString::number(i)+ (hresultToQstring(hr) == "" ? "" : "<" + hresultToQstring(hr) + ">"));
     }
     emit mapChanged(nameMap);
     changeSelected();
@@ -187,7 +187,7 @@ void CALLBACK KinectManager::OnSensorStatusChanged( HRESULT hr, const OLECHAR* i
             pThis->nameMap.remove(index);
         } else {    //The status of the kinect has changed and it needs to be updated
             emit pThis->status ("The status of Kinect " + pThis->nameMap[index] + " has changed to " + (pThis->hresultToQstring(hr) == "" ? "OK" : "<" +pThis->hresultToQstring(hr)) + ".");
-            pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr)) + ">");
+            pThis->nameMap.insert(index,"Kinect"+QString::number(index)+ (pThis->hresultToQstring(hr) == "" ? "" : "<" +pThis->hresultToQstring(hr) + ">"));
             if (FAILED(hr) && pThis->selectedKinect == index){
                 pThis->uninitKinect(pThis->kinectMap.value(index));
                 pThis->selectedKinect = -1;
