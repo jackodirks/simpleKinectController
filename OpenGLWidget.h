@@ -19,7 +19,7 @@ public:
 private:
     GLuint textureId;
     bool vertFlip;
-    int screen_width, screen_height;
+    int screen_width, screen_height, openGLMajorVersion;
     unsigned char blackScreen[640*480*4];
     void initializeGL();
     void resizeGL(int w, int h);
